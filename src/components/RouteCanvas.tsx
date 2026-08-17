@@ -133,12 +133,13 @@ export function RouteCanvas({
   );
 
   const followCamFor = useCallback(
-    (floorId: string, a: number, _prevRot: number): Cam => {
+    (floorId: string, a: number, prevRot: number): Cam => {
       const s = sampleAt(floorId, a);
-      // north-up: pan + zoom to the puck without rotating the plan (rotating a
-      // straight corridor flips the map upside-down and is disorienting). The
-      // puck's own arrow shows the direction of travel.
-      return { x: s.pos.x, y: s.pos.y, scale: FOLLOW_SCALE, rot: 0 };
+      // heading-up: rotate the plan so the direction of travel points up. This
+      // keeps the puck's arrow pointing straight up (your heading) while the map
+      // turns underneath, like a car navigation view.
+      const theta = (Math.atan2(s.dir.y, s.dir.x) * 180) / Math.PI;
+      return { x: s.pos.x, y: s.pos.y, scale: FOLLOW_SCALE, rot: shortestAngle(-90 - theta, prevRot) };
     },
     [sampleAt],
   );

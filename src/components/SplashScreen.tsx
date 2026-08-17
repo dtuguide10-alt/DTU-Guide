@@ -42,11 +42,9 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
             />
           ))}
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-primary-wash">
-          Campus Wayfinder
-        </h1>
-        <p className="mt-2 max-w-xs text-sm text-primary-wash/60">
-          Scan a QR point anywhere on campus to find your way indoors.
+        <h1 className="text-3xl font-semibold tracking-tight text-primary-wash">DTU Guide</h1>
+        <p className="mt-2 max-w-xs text-sm text-primary-wash/70">
+          Indoor navigation for Academic Block 4 — scan a QR point to find your way.
         </p>
       </div>
     </div>

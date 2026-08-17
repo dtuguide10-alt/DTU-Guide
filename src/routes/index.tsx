@@ -8,13 +8,13 @@ import { POPULAR_DESTINATIONS, searchDestinations } from "@/lib/campus";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Campus Wayfinder — Indoor Navigation" },
+      { title: "DTU Guide — Indoor Navigation" },
       {
         name: "description",
         content:
           "Choose your destination, scan the nearest campus QR point and follow step-by-step indoor directions. No login required.",
       },
-      { property: "og:title", content: "Campus Wayfinder — Indoor Navigation" },
+      { property: "og:title", content: "DTU Guide — Indoor Navigation" },
       {
         property: "og:description",
         content: "Pick a destination, scan a QR point, follow the route indoors.",
