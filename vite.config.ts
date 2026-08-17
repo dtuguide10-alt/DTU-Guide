@@ -12,4 +12,7 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Build the server for Vercel (Nitro's Build Output API). Local `dev` is
+  // unaffected (vite dev doesn't run nitro).
+  nitro: { preset: "vercel" },
 });
