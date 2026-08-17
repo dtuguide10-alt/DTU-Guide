@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">DTU Guide</string>
+    <string name="title_activity_main">DTU Guide</string>
+    <string name="package_name">app.dtuguide</string>
+    <string name="custom_url_scheme">app.dtuguide</string>
+</resources>
