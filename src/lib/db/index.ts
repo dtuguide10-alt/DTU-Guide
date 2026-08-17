@@ -1,16 +1,24 @@
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
+import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
 
 /**
- * Server-only database client (Neon over HTTP — works on Vercel serverless and
- * locally). Never import this from client components; only from server
- * functions / route loaders.
+ * Lazily-created, server-only database client (Neon over HTTP — works on Vercel
+ * serverless and locally). The driver is imported dynamically and nothing runs
+ * at module load, so this file is safe even if it is ever pulled into a client
+ * bundle. Only call `getDb()` from server functions / route loaders.
  */
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  throw new Error("DATABASE_URL is not set. Add it to .env (see README).");
+let client: NeonHttpDatabase<typeof schema> | null = null;
+
+export async function getDb() {
+  if (client) return client;
+  const url = process.env["DATABASE_URL"];
+  if (!url) throw new Error("DATABASE_URL is not set. Add it to .env (see README).");
+  const [{ drizzle }, { neon }] = await Promise.all([
+    import("drizzle-orm/neon-http"),
+    import("@neondatabase/serverless"),
+  ]);
+  client = drizzle(neon(url), { schema });
+  return client;
 }
 
-export const db = drizzle(neon(connectionString), { schema });
 export { schema };

@@ -2,7 +2,7 @@
  * Seeds the qr_points table from the bundled checkpoint list.
  * Run with:  bun run db:seed
  */
-import { db } from "./index";
+import { getDb } from "./index";
 import { qrPoints } from "./schema";
 import { QR_POINTS } from "../nav/qr";
 
@@ -13,6 +13,7 @@ const rows = QR_POINTS.map((q) => ({
   node: q.node,
 }));
 
+const db = await getDb();
 await db.delete(qrPoints);
 await db.insert(qrPoints).values(rows);
 

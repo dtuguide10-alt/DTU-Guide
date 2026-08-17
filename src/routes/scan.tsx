@@ -4,7 +4,8 @@ import { z } from "zod";
 import { PixelIcon } from "@/components/PixelIcon";
 import { QrScanner } from "@/components/QrScanner";
 import { Button } from "@/components/ui/button";
-import { QR_POINTS, findDestination, findQrPoint, type QrPoint } from "@/lib/campus";
+import { findDestination, findQrPoint, type QrPoint } from "@/lib/campus";
+import { useQrPoints } from "@/lib/useQrPoints";
 
 const searchSchema = z.object({ to: z.string().optional(), from: z.string().optional() });
 
@@ -24,18 +25,19 @@ export const Route = createFileRoute("/scan")({
 });
 
 /** Match scanned text to a checkpoint. Accepts the raw code or a code embedded in text/URL. */
-function matchScanned(text: string): QrPoint | undefined {
+function matchScanned(text: string, list: QrPoint[]): QrPoint | undefined {
   const t = text.trim();
-  const exact = findQrPoint(t);
+  const exact = findQrPoint(t, list);
   if (exact) return exact;
   const m = t.toUpperCase().match(/AB4-\d-[A-Z0-9]+/);
-  return m ? findQrPoint(m[0]) : undefined;
+  return m ? findQrPoint(m[0], list) : undefined;
 }
 
 function Scan() {
   const { to, from } = Route.useSearch();
   const dest = findDestination(to);
   const navigate = useNavigate();
+  const qrPoints = useQrPoints();
   const [detected, setDetected] = useState<QrPoint | null>(null);
   const [invalid, setInvalid] = useState<string | null>(null);
   const [manual, setManual] = useState("");
@@ -54,7 +56,7 @@ function Scan() {
   const rescan = Boolean(from);
 
   function handleText(text: string) {
-    const q = matchScanned(text);
+    const q = matchScanned(text, qrPoints);
     if (q) {
       setInvalid(null);
       setDetected(q);
@@ -165,7 +167,7 @@ function Scan() {
               className="h-10 min-w-0 flex-1 rounded-[8px] border border-border bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             <datalist id="qr-codes">
-              {QR_POINTS.map((q) => (
+              {qrPoints.map((q) => (
                 <option key={q.code} value={q.code}>
                   {q.name}
                 </option>

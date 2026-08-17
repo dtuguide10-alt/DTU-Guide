@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as NavigateRouteImport } from './routes/navigate'
 import { Route as QrCodesRouteImport } from './routes/qr-codes'
 import { Route as QrEditorRouteImport } from './routes/qr-editor'
@@ -18,6 +19,11 @@ import { Route as ScanRouteImport } from './routes/scan'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NavigateRoute = NavigateRouteImport.update({
@@ -43,6 +49,7 @@ const ScanRoute = ScanRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/navigate': typeof NavigateRoute
   '/qr-codes': typeof QrCodesRoute
   '/qr-editor': typeof QrEditorRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/navigate': typeof NavigateRoute
   '/qr-codes': typeof QrCodesRoute
   '/qr-editor': typeof QrEditorRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/navigate': typeof NavigateRoute
   '/qr-codes': typeof QrCodesRoute
   '/qr-editor': typeof QrEditorRoute
@@ -65,14 +74,22 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/navigate' | '/qr-codes' | '/qr-editor' | '/scan'
+  fullPaths: '/' | '/admin' | '/navigate' | '/qr-codes' | '/qr-editor' | '/scan'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/navigate' | '/qr-codes' | '/qr-editor' | '/scan'
-  id: '__root__' | '/' | '/navigate' | '/qr-codes' | '/qr-editor' | '/scan'
+  to: '/' | '/admin' | '/navigate' | '/qr-codes' | '/qr-editor' | '/scan'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/navigate'
+    | '/qr-codes'
+    | '/qr-editor'
+    | '/scan'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   NavigateRoute: typeof NavigateRoute
   QrCodesRoute: typeof QrCodesRoute
   QrEditorRoute: typeof QrEditorRoute
@@ -86,6 +103,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/navigate': {
@@ -121,6 +145,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   NavigateRoute: NavigateRoute,
   QrCodesRoute: QrCodesRoute,
   QrEditorRoute: QrEditorRoute,

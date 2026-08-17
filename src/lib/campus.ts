@@ -49,16 +49,20 @@ export const DESTINATIONS: Destination[] = FLOORS.flatMap((f) =>
   f.rooms.filter((r) => r.searchable !== false).map(toDestination),
 );
 
-export const QR_POINTS: QrPoint[] = RAW_QR.map((q) => {
-  const floor = getFloor(q.floor)!;
+/** Turn a raw checkpoint record (bundled or from the DB) into the UI view-model. */
+export function toQrPoint(q: { code: string; name: string; floor: string; node: string }): QrPoint {
+  const floor = getFloor(q.floor);
   return {
     code: q.code,
     name: q.name,
-    block: `${floor.building} · ${floor.name}`,
+    block: floor ? `${floor.building} · ${floor.name}` : q.floor,
     floor: q.floor,
     node: q.node,
   };
-});
+}
+
+/** Bundled checkpoints — used as the offline fallback / initial data. */
+export const QR_POINTS: QrPoint[] = RAW_QR.map(toQrPoint);
 
 export function findDestination(id: string | undefined): Destination | undefined {
   if (!id) return undefined;
@@ -66,8 +70,11 @@ export function findDestination(id: string | undefined): Destination | undefined
   return room ? toDestination(room) : undefined;
 }
 
-export function findQrPoint(code: string | undefined): QrPoint | undefined {
-  return QR_POINTS.find((q) => q.code === code);
+export function findQrPoint(
+  code: string | undefined,
+  list: QrPoint[] = QR_POINTS,
+): QrPoint | undefined {
+  return list.find((q) => q.code === code);
 }
 
 export function searchDestinations(query: string): Destination[] {

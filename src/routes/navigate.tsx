@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { RouteCanvas, type CanvasMode } from "@/components/RouteCanvas";
 import { PixelIcon } from "@/components/PixelIcon";
 import { Button } from "@/components/ui/button";
 import { computeRoute, findDestination, findQrPoint } from "@/lib/campus";
+import { useQrPoints } from "@/lib/useQrPoints";
+import { logScan } from "@/lib/qrFns";
 import type { Maneuver } from "@/lib/nav/engine";
 
 const searchSchema = z.object({ to: z.string().optional(), from: z.string().optional() });
@@ -35,11 +37,19 @@ function maneuverGlyph(kind: Maneuver["kind"]) {
 
 function Navigate() {
   const { to, from } = Route.useSearch();
+  const qrPoints = useQrPoints();
   const dest = findDestination(to);
-  const origin = findQrPoint(from);
+  const origin = findQrPoint(from, qrPoints);
   const navigate = useNavigate();
 
   const route = dest && origin ? computeRoute(origin, dest) : null;
+
+  // log the navigation session start (fire-and-forget analytics)
+  useEffect(() => {
+    if (origin && dest) {
+      logScan({ data: { qrCode: origin.code, destId: dest.id } }).catch(() => {});
+    }
+  }, [origin?.code, dest?.id, origin, dest]);
 
   const [step, setStep] = useState(0);
   const [started, setStarted] = useState(false);

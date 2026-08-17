@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { QR_POINTS } from "@/lib/campus";
 import { getFloor } from "@/lib/nav/engine";
+import { useQrPoints } from "@/lib/useQrPoints";
 
 export const Route = createFileRoute("/qr-codes")({
   head: () => ({ meta: [{ title: "Printable QR Codes — DTU Guide" }] }),
@@ -9,26 +9,27 @@ export const Route = createFileRoute("/qr-codes")({
 });
 
 function QrCodes() {
+  const points = useQrPoints();
   const [urls, setUrls] = useState<Record<string, string>>({});
 
   // group checkpoints by floor (in order)
   const groups = useMemo(() => {
-    const byFloor = new Map<string, typeof QR_POINTS>();
-    for (const q of QR_POINTS) {
+    const byFloor = new Map<string, typeof points>();
+    for (const q of points) {
       if (!byFloor.has(q.floor)) byFloor.set(q.floor, []);
       byFloor.get(q.floor)!.push(q);
     }
     return [...byFloor.entries()]
-      .map(([floorId, points]) => ({ floor: getFloor(floorId), points }))
+      .map(([floorId, pts]) => ({ floor: getFloor(floorId), points: pts }))
       .sort((a, b) => (a.floor?.level ?? 0) - (b.floor?.level ?? 0));
-  }, []);
+  }, [points]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const QRCode = (await import("qrcode")).default;
       const out: Record<string, string> = {};
-      for (const q of QR_POINTS) {
+      for (const q of points) {
         // Each QR encodes just the checkpoint code, which the in-app scanner reads.
         out[q.code] = await QRCode.toDataURL(q.code, { margin: 1, width: 320, errorCorrectionLevel: "M" });
       }
@@ -37,7 +38,7 @@ function QrCodes() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [points]);
 
   return (
     <main className="min-h-screen bg-background">
@@ -47,7 +48,7 @@ function QrCodes() {
           <div>
             <h1 className="text-sm font-semibold tracking-tight">Printable QR codes</h1>
             <p className="text-xs text-muted-foreground">
-              {QR_POINTS.length} checkpoints · each code is a QR the app scanner reads. Print, cut,
+              {points.length} checkpoints · each code is a QR the app scanner reads. Print, cut,
               and stick each one at its location.
             </p>
           </div>
