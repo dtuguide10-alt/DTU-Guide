@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { Icon } from "@/components/Icon";
 import { Button } from "@/components/ui/button";
 import { FLOOR_ORDER } from "@/lib/nav/engine";
 import { checkAdmin, deleteQrPoint, getQrPoints, saveQrPoint, type QrPointDTO } from "@/lib/qrFns";
@@ -31,17 +32,20 @@ function Admin() {
   if (!authed) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-background px-6">
-        <form onSubmit={login} className="w-full max-w-xs rounded-[12px] border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
-          <h1 className="text-sm font-semibold tracking-tight">DTU Guide · Admin</h1>
-          <p className="mt-1 text-xs text-muted-foreground">Enter the admin password to manage checkpoints.</p>
+        <form onSubmit={login} className="animate-rise w-full max-w-xs rounded-[16px] border border-border bg-card p-6 shadow-[var(--elevation-2)]">
+          <span className="mb-4 grid size-10 place-items-center rounded-[11px] bg-primary text-primary-foreground shadow-[var(--elevation-1)]">
+            <Icon name="building" size={18} className="text-primary-foreground" />
+          </span>
+          <h1 className="text-title">Admin</h1>
+          <p className="mt-1 text-[13px] text-muted-foreground">Enter the admin password to manage checkpoints.</p>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Admin password"
-            className="mt-4 h-10 w-full rounded-[8px] border border-border bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="mt-4 h-11 w-full rounded-[10px] border border-border bg-card px-3.5 text-sm outline-none transition-colors focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           />
-          {loginError && <p className="mt-2 text-xs text-[color:var(--error)]">{loginError}</p>}
+          {loginError && <p className="mt-2 text-xs text-destructive">{loginError}</p>}
           <Button type="submit" variant="pixel" size="pixel" className="mt-4 w-full">
             Sign in
           </Button>
@@ -80,13 +84,13 @@ function AdminPanel({ password }: { password: string }) {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-5 py-4">
+      <header className="sticky top-0 z-20 glass border-b border-border/70">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-5 py-3.5">
           <div>
-            <h1 className="text-sm font-semibold tracking-tight">Checkpoints admin</h1>
-            <p className="text-xs text-muted-foreground">{points.length} checkpoints · edits go live instantly</p>
+            <h1 className="text-[15px] font-semibold tracking-tight">Checkpoints admin</h1>
+            <p className="text-[13px] text-muted-foreground">{points.length} checkpoints · edits go live instantly</p>
           </div>
-          <a href="/qr-codes" className="text-xs text-primary underline-offset-4 hover:underline">
+          <a href="/qr-codes" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-primary transition-colors hover:bg-accent">
             Printable codes →
           </a>
         </div>
@@ -99,9 +103,9 @@ function AdminPanel({ password }: { password: string }) {
             e.preventDefault();
             save.mutate();
           }}
-          className="mb-6 rounded-[10px] border border-border bg-card p-4"
+          className="mb-6 rounded-[14px] border border-border bg-card p-4 shadow-[var(--elevation-1)]"
         >
-          <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <p className="mb-3 text-overline text-muted-foreground">
             {editing ? `Edit ${form.original}` : "Add checkpoint"}
           </p>
           <div className="grid gap-2 sm:grid-cols-4">
@@ -126,11 +130,11 @@ function AdminPanel({ password }: { password: string }) {
               )}
             </div>
           </div>
-          {error && <p className="mt-2 text-xs text-[color:var(--error)]">{error}</p>}
+          {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
         </form>
 
         {/* list */}
-        <div className="overflow-hidden rounded-[10px] border border-border">
+        <div className="overflow-hidden rounded-[14px] border border-border shadow-[var(--elevation-1)]">
           <table className="w-full text-left text-sm">
             <thead className="bg-muted text-[11px] uppercase tracking-wider text-muted-foreground">
               <tr>
@@ -159,7 +163,7 @@ function AdminPanel({ password }: { password: string }) {
                     <button
                       type="button"
                       onClick={() => remove.mutate(q.code)}
-                      className="text-xs text-[color:var(--error)] hover:underline"
+                      className="text-xs text-destructive hover:underline"
                     >
                       Delete
                     </button>

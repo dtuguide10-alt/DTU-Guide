@@ -63,28 +63,28 @@
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.968 0.002 250);
-  --foreground: oklch(0.24 0.017 253);
+  --radius: 0.875rem;
+  --background: oklch(0.985 0.001 250);
+  --foreground: oklch(0.22 0.014 260);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.017 253);
+  --card-foreground: oklch(0.22 0.014 260);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.017 253);
-  --primary: oklch(0.55 0.093 250);
+  --popover-foreground: oklch(0.22 0.014 260);
+  --primary: oklch(0.58 0.15 255);
   --primary-foreground: oklch(0.99 0.002 250);
-  --primary-deep: oklch(0.42 0.077 253);
-  --primary-wash: oklch(0.92 0.019 245);
-  --secondary: oklch(0.955 0.006 250);
-  --secondary-foreground: oklch(0.42 0.077 253);
-  --muted: oklch(0.955 0.006 250);
-  --muted-foreground: oklch(0.52 0.019 250);
-  --accent: oklch(0.945 0.014 245);
-  --accent-foreground: oklch(0.42 0.077 253);
-  --destructive: oklch(0.52 0.11 25);
+  --primary-deep: oklch(0.48 0.14 257);
+  --primary-wash: oklch(0.93 0.03 250);
+  --secondary: oklch(0.965 0.003 260);
+  --secondary-foreground: oklch(0.4 0.05 258);
+  --muted: oklch(0.965 0.003 260);
+  --muted-foreground: oklch(0.53 0.014 260);
+  --accent: oklch(0.955 0.012 250);
+  --accent-foreground: oklch(0.4 0.05 258);
+  --destructive: oklch(0.55 0.19 25);
   --destructive-foreground: oklch(0.99 0.002 250);
-  --border: oklch(0.9 0.008 250);
-  --input: oklch(0.9 0.008 250);
-  --ring: oklch(0.55 0.093 250);
+  --border: oklch(0.925 0.004 260);
+  --input: oklch(0.915 0.005 260);
+  --ring: oklch(0.58 0.15 255);
   --chart-1: oklch(0.55 0.093 250);
   --chart-2: oklch(0.42 0.077 253);
   --chart-3: oklch(0.92 0.019 245);
@@ -100,20 +100,30 @@
   --sidebar-ring: oklch(0.55 0.093 250);
 
   --night: oklch(0.19 0.03 260);
-  --shadow-soft: 0 1px 2px oklch(0.24 0.017 253 / 6%), 0 8px 24px oklch(0.24 0.017 253 / 6%);
-  --grid-line: oklch(0.55 0.093 250 / 7%);
+  --grid-line: oklch(0.58 0.15 255 / 6%);
+
+  /* Soft, low-spread elevation — depth without any glow. */
+  --shadow-soft: 0 1px 2px oklch(0.22 0.014 260 / 5%), 0 8px 24px oklch(0.22 0.014 260 / 6%);
+  --elevation-1:
+    0 1px 1px oklch(0.22 0.014 260 / 4%), 0 2px 6px oklch(0.22 0.014 260 / 6%);
+  --elevation-2:
+    0 2px 4px oklch(0.22 0.014 260 / 5%), 0 12px 32px oklch(0.22 0.014 260 / 9%);
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @theme inline {
   --color-primary-deep: var(--primary-deep);
   --color-primary-wash: var(--primary-wash);
   --color-night: var(--night);
+  --shadow-elevation-1: var(--elevation-1);
+  --shadow-elevation-2: var(--elevation-2);
+  --ease-soft: var(--ease-soft);
 }
 
 @layer base {
-  /* slightly larger base type for a calmer, more premium read */
+  /* Calm, premium base — hierarchy comes from the scale, not bulk. */
   html {
-    font-size: 106.25%; /* 17px base (was 16px) */
+    font-size: 103%; /* ~16.5px base */
   }
 
   * {
@@ -126,7 +136,8 @@
     font-family:
       "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11"; /* refined Inter glyphs */
-    letter-spacing: -0.006em;
+    letter-spacing: -0.011em;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -134,9 +145,47 @@
 
   h1,
   h2,
-  h3 {
-    letter-spacing: -0.02em;
+  h3,
+  h4 {
+    letter-spacing: -0.021em;
+    line-height: 1.15;
+    text-wrap: balance;
   }
+}
+
+/* ---- Type scale (Apple-minimal) --------------------------------------- */
+@utility text-display {
+  font-size: 2rem;
+  line-height: 1.08;
+  font-weight: 650;
+  letter-spacing: -0.028em;
+}
+@utility text-title {
+  font-size: 1.35rem;
+  line-height: 1.18;
+  font-weight: 640;
+  letter-spacing: -0.022em;
+}
+@utility text-overline {
+  font-size: 0.6875rem;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---- Surfaces --------------------------------------------------------- */
+@utility card-surface {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--elevation-1);
+}
+
+/* Frosted, translucent chrome (banners, chips, sheets). */
+@utility glass {
+  background-color: color-mix(in oklch, var(--color-card) 78%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
 /* Subtle pixel grid backdrop */
@@ -235,6 +284,75 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* ---- Motion system (Apple-minimal, eased — no hard steps) ------------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Content entrance — pair with inline animation-delay for a gentle stagger. */
+@utility animate-rise {
+  opacity: 0;
+  animation: rise 0.55s var(--ease-soft) forwards;
+}
+
+@utility animate-sheet-in {
+  animation: sheet-in 0.5s var(--ease-soft);
+}
+
+/* Card that lifts a touch on hover — depth, never glow. */
+@utility lift {
+  transition:
+    transform 0.25s var(--ease-soft),
+    box-shadow 0.25s var(--ease-soft),
+    border-color 0.25s var(--ease-soft);
+}
+.lift:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--elevation-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-rise {
+    opacity: 1;
   }
 }
 

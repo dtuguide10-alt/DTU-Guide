@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
-import { PixelIcon } from "@/components/PixelIcon";
+import { ArrowLeft, Check } from "lucide-react";
+import { Icon } from "@/components/Icon";
 import { QrScanner } from "@/components/QrScanner";
 import { Button } from "@/components/ui/button";
 import { findDestination, findQrPoint, type QrPoint } from "@/lib/campus";
@@ -72,45 +73,50 @@ function Scan() {
 
   return (
     <main className="flex min-h-screen flex-col bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-md items-center gap-3 px-5 py-4">
+      <header className="sticky top-0 z-20 glass border-b border-border/70">
+        <div className="mx-auto flex max-w-md items-center gap-2.5 px-5 py-3.5">
           {rescan ? (
             <Link
               to="/navigate"
               search={{ to: dest.id, from }}
-              className="text-sm text-muted-foreground hover:text-foreground"
+              aria-label="Back"
+              className="grid size-9 -ml-1.5 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
-              ← Back
+              <ArrowLeft size={18} />
             </Link>
           ) : (
-            <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-              ← Back
+            <Link
+              to="/"
+              aria-label="Back"
+              className="grid size-9 -ml-1.5 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
+              <ArrowLeft size={18} />
             </Link>
           )}
-          <span className="text-sm font-semibold tracking-tight">
+          <span className="text-[15px] font-semibold tracking-tight">
             {rescan ? "Scan a new QR code" : "Scan QR code"}
           </span>
         </div>
       </header>
 
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 py-5">
-        <div className="flex items-center gap-2.5 rounded-[8px] border border-border bg-card px-4 py-3">
-          <PixelIcon name={dest.icon} size={16} className="text-primary" />
+        <div className="flex items-center gap-3 rounded-[14px] border border-border bg-card px-4 py-3 shadow-[var(--elevation-1)]">
+          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] bg-primary-wash text-primary">
+            <Icon name={dest.icon} size={17} />
+          </span>
           <div className="min-w-0">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-              Destination selected
-            </p>
-            <p className="truncate text-sm font-medium">{dest.name}</p>
+            <p className="text-overline text-muted-foreground">Destination</p>
+            <p className="truncate text-[15px] font-medium">{dest.name}</p>
           </div>
           <Link
             to="/"
-            className="ml-auto text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            className="ml-auto rounded-full px-3 py-1.5 text-[13px] font-medium text-primary transition-colors hover:bg-accent"
           >
             Change
           </Link>
         </div>
 
-        <div className="relative mt-4 aspect-square w-full overflow-hidden rounded-[8px] border border-border bg-black">
+        <div className="relative mt-4 aspect-square w-full overflow-hidden rounded-[16px] border border-border bg-black shadow-[var(--elevation-1)]">
           {!detected ? (
             <QrScanner active={!detected} onDecode={handleText} />
           ) : (
@@ -122,15 +128,17 @@ function Scan() {
             <PixelFrameCorners />
             {!detected && (
               <div
-                className="absolute inset-x-2 h-[3px] bg-primary shadow-[0_0_8px_var(--primary)]"
-                style={{ top: 0, animation: "scan-sweep 1.1s ease-in-out infinite" }}
+                className="absolute inset-x-2 h-px bg-primary/80"
+                style={{ top: 0, animation: "scan-sweep 1.8s var(--ease-soft) infinite" }}
               />
             )}
             {detected && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="flex items-center gap-2 rounded-[6px] bg-card px-3 py-2 shadow-[var(--shadow-soft)]">
-                  <PixelIcon name="current" size={14} className="text-primary" />
-                  <span className="text-xs font-medium">{detected.code} detected</span>
+                <div className="animate-rise flex items-center gap-2 rounded-full glass px-3.5 py-2 shadow-[var(--elevation-2)]">
+                  <span className="grid size-5 place-items-center rounded-full bg-primary text-primary-foreground">
+                    <Check size={13} strokeWidth={2.5} />
+                  </span>
+                  <span className="text-[13px] font-medium">{detected.code} detected</span>
                 </div>
               </div>
             )}
@@ -141,17 +149,17 @@ function Scan() {
         </div>
 
         {invalid && !detected && (
-          <p className="mt-2 rounded-[6px] bg-[color:var(--error)]/10 px-3 py-2 text-center text-[11px] text-[color:var(--error)]">
+          <p className="mt-2 rounded-[10px] bg-destructive/10 px-3 py-2.5 text-center text-[12px] font-medium text-destructive">
             {invalid}
           </p>
         )}
 
-        <div className="mt-4 rounded-[8px] border border-border bg-card p-4">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-            Your position
+        <div className="mt-4 rounded-[14px] border border-border bg-card p-4 shadow-[var(--elevation-1)]">
+          <p className="text-overline text-muted-foreground">Your position</p>
+          <p className="mt-1.5 text-[15px] font-medium">
+            {detected ? detected.name : "Waiting for a scan…"}
           </p>
-          <p className="mt-1 text-sm font-medium">{detected ? detected.name : "Waiting for a scan…"}</p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[13px] text-muted-foreground">
             {detected ? detected.block : "Hold the phone steady over the code"}
           </p>
         </div>
@@ -164,7 +172,7 @@ function Scan() {
               onChange={(e) => setManual(e.target.value)}
               list="qr-codes"
               placeholder="Or type the code, e.g. AB4-1-01"
-              className="h-10 min-w-0 flex-1 rounded-[8px] border border-border bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-11 min-w-0 flex-1 rounded-[10px] border border-border bg-card px-3.5 text-sm outline-none transition-colors focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             />
             <datalist id="qr-codes">
               {qrPoints.map((q) => (
@@ -212,9 +220,8 @@ function PixelFrameCorners() {
     <>
       {corners.map((c) => (
         <span key={c} className={`absolute size-8 ${c}`} aria-hidden>
-          <span className="absolute left-0 top-0 h-[3px] w-7 bg-primary" />
-          <span className="absolute left-0 top-0 h-7 w-[3px] bg-primary" />
-          <span className="absolute left-[9px] top-[9px] size-[5px] bg-primary-deep" />
+          <span className="absolute left-0 top-0 h-[2px] w-6 rounded-full bg-white/90" />
+          <span className="absolute left-0 top-0 h-6 w-[2px] rounded-full bg-white/90" />
         </span>
       ))}
     </>

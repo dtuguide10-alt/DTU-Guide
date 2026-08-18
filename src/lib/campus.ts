@@ -6,7 +6,7 @@
  * path, distance, turn-by-turn steps, multi-floor transitions) lives in
  * `./nav/engine`.
  */
-import type { PixelIconName } from "@/components/PixelIcon";
+import type { IconName } from "@/components/Icon";
 import { FLOORS } from "./nav/floors";
 import { QR_POINTS as RAW_QR } from "./nav/qr";
 import { CATEGORY_ICON, type Room } from "./nav/types";
@@ -20,7 +20,7 @@ export type Destination = {
   name: string;
   block: string;
   floor: string;
-  icon: PixelIconName;
+  icon: IconName;
   room: Room;
 };
 

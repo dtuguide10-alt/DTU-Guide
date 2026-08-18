@@ -1,4 +1,4 @@
-import type { PixelIconName } from "@/components/PixelIcon";
+import type { IconName } from "@/components/Icon";
 
 /** A node in the walkable navigation graph (corridor point, doorway, stair or lift landing). */
 export type NavNode = {
@@ -83,7 +83,7 @@ export type QrPoint = {
   node: string;
 };
 
-export const CATEGORY_ICON: Record<RoomCategory, PixelIconName> = {
+export const CATEGORY_ICON: Record<RoomCategory, IconName> = {
   classroom: "door",
   lab: "lab",
   office: "building",

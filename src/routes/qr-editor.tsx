@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PixelIcon } from "@/components/PixelIcon";
+import { Icon } from "@/components/Icon";
 import { FLOOR_ORDER } from "@/lib/nav/engine";
 import type { NavNode } from "@/lib/nav/types";
 
@@ -92,12 +93,14 @@ function QrEditor() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-5xl items-center gap-2.5 px-5 py-4">
-          <PixelIcon name="qr" size={16} className="text-primary" />
+      <header className="sticky top-0 z-20 glass border-b border-border/70">
+        <div className="mx-auto flex max-w-5xl items-center gap-3 px-5 py-3.5">
+          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] bg-primary-wash text-primary">
+            <Icon name="qr" size={18} />
+          </span>
           <div>
-            <p className="text-sm font-semibold tracking-tight">QR Placement Editor</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[15px] font-semibold tracking-tight">QR Placement Editor</p>
+            <p className="text-[13px] text-muted-foreground">
               Tap the real plan to drop a QR, then drag it to the exact spot. It snaps to the
               nearest navigation point.
             </p>
@@ -114,10 +117,10 @@ function QrEditor() {
                 key={f.id}
                 type="button"
                 onClick={() => setFloorId(f.id)}
-                className={`rounded-[6px] border px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-all duration-200 [transition-timing-function:var(--ease-soft)] active:scale-95 ${
                   floorId === f.id
-                    ? "border-primary/40 bg-primary-wash text-primary-deep"
-                    : "border-border bg-card text-muted-foreground hover:bg-accent"
+                    ? "border-primary bg-primary text-primary-foreground shadow-[var(--elevation-1)]"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/30 hover:text-foreground"
                 }`}
               >
                 {f.name}
@@ -125,7 +128,7 @@ function QrEditor() {
             ))}
           </div>
 
-          <div className="max-h-[74vh] overflow-y-auto rounded-[8px] border border-border bg-card shadow-[var(--shadow-soft)]">
+          <div className="max-h-[74vh] overflow-y-auto rounded-[14px] border border-border bg-card shadow-[var(--elevation-1)]">
             <svg
               ref={svgRef}
               viewBox={floor.viewBox.join(" ")}
@@ -220,7 +223,7 @@ function QrEditor() {
           ) : (
             <ul className="mt-3 space-y-2">
               {onThisFloor.map((p) => (
-                <li key={p.id} className="flex items-center gap-2 rounded-[8px] border border-border bg-card px-3 py-2">
+                <li key={p.id} className="flex items-center gap-2 rounded-[12px] border border-border bg-card px-3 py-2.5 shadow-[var(--elevation-1)]">
                   <span className="rounded-[4px] border border-border px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-muted-foreground">
                     {p.code}
                   </span>
@@ -243,24 +246,22 @@ function QrEditor() {
                   <button
                     type="button"
                     onClick={() => setPlaced((prev) => prev.filter((x) => x.id !== p.id))}
-                    className="shrink-0 text-muted-foreground hover:text-[color:var(--error)]"
+                    className="grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                     aria-label="Remove"
                   >
-                    ✕
+                    <X size={15} />
                   </button>
                 </li>
               ))}
             </ul>
           )}
 
-          <h3 className="mb-2 mt-8 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-            Generated config
-          </h3>
+          <h3 className="mb-2 mt-8 text-overline text-muted-foreground">Generated config</h3>
           <textarea
             readOnly
             value={configText}
             onFocus={(e) => e.currentTarget.select()}
-            className="h-56 w-full resize-none rounded-[8px] border border-border bg-[color:var(--muted)] p-3 font-mono text-[11px] leading-relaxed text-foreground outline-none"
+            className="h-56 w-full resize-none rounded-[12px] border border-border bg-muted p-3.5 font-mono text-[11px] leading-relaxed text-foreground outline-none"
           />
           <Button
             variant="pixel"

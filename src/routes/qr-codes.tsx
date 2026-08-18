@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { Printer } from "lucide-react";
 import { getFloor } from "@/lib/nav/engine";
 import { useQrPoints } from "@/lib/useQrPoints";
 
@@ -43,11 +44,11 @@ function QrCodes() {
   return (
     <main className="min-h-screen bg-background">
       {/* toolbar (screen only) */}
-      <div className="border-b border-border bg-card print:hidden">
-        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 px-5 py-4">
+      <div className="sticky top-0 z-20 glass border-b border-border/70 print:hidden">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 px-5 py-3.5">
           <div>
-            <h1 className="text-sm font-semibold tracking-tight">Printable QR codes</h1>
-            <p className="text-xs text-muted-foreground">
+            <h1 className="text-[15px] font-semibold tracking-tight">Printable QR codes</h1>
+            <p className="text-[13px] text-muted-foreground">
               {points.length} checkpoints · each code is a QR the app scanner reads. Print, cut,
               and stick each one at its location.
             </p>
@@ -55,8 +56,9 @@ function QrCodes() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="rounded-[8px] bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-soft)] hover:bg-primary/90"
+            className="inline-flex items-center gap-2 rounded-[10px] bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--elevation-1)] transition-colors hover:bg-primary-deep"
           >
+            <Printer size={16} />
             Print / Save PDF
           </button>
         </div>
@@ -65,14 +67,14 @@ function QrCodes() {
       <div className="mx-auto max-w-4xl px-5 py-6 print:px-0 print:py-0">
         {groups.map(({ floor, points }) => (
           <section key={floor?.id} className="mb-8 break-inside-avoid">
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <h2 className="mb-3 text-overline text-muted-foreground">
               {floor?.name ?? "Floor"} — {points.length} codes
             </h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 print:grid-cols-3">
               {points.map((q) => (
                 <div
                   key={q.code}
-                  className="flex break-inside-avoid flex-col items-center rounded-[10px] border border-border bg-white p-3 text-center"
+                  className="flex break-inside-avoid flex-col items-center rounded-[14px] border border-border bg-white p-3.5 text-center shadow-[var(--elevation-1)] print:shadow-none"
                 >
                   {urls[q.code] ? (
                     <img src={urls[q.code]} alt={q.code} className="aspect-square w-full max-w-[150px]" />

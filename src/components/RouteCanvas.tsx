@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Route } from "@/lib/nav/engine";
 import type { Destination, QrPoint } from "@/lib/campus";
-import { PixelIcon } from "@/components/PixelIcon";
+import { Icon } from "@/components/Icon";
 
 const SCREEN_W = 400;
 const SCREEN_H = 640;
@@ -395,7 +395,7 @@ export function RouteCanvas({
 
       {/* floor badge */}
       {leg && (
-        <div className="pointer-events-none absolute left-3 top-20 rounded-full border border-border bg-card/90 px-3 py-1 text-xs font-semibold text-primary-deep shadow-[var(--shadow-soft)] backdrop-blur">
+        <div className="pointer-events-none absolute left-3 top-24 glass rounded-full border border-border/70 px-3.5 py-1.5 text-[12px] font-semibold text-primary-deep shadow-[var(--elevation-1)]">
           {leg.floor.name}
         </div>
       )}
@@ -404,11 +404,11 @@ export function RouteCanvas({
       {transition && (
         <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center px-6">
           <div
-            className="flex items-center gap-3 rounded-[14px] border border-white/20 bg-primary px-5 py-4 text-primary-foreground shadow-[0_12px_32px_rgba(23,32,42,0.28)]"
-            style={{ animation: "floor-card-in 300ms ease-out" }}
+            className="flex items-center gap-3 rounded-[16px] bg-primary px-5 py-4 text-primary-foreground shadow-[var(--elevation-2)]"
+            style={{ animation: "floor-card-in 320ms var(--ease-soft)" }}
           >
-            <div className="grid size-11 shrink-0 place-items-center rounded-full bg-white/15">
-              <PixelIcon name={transition.lift ? "elevator" : "stairs"} size={24} className="text-white" />
+            <div className="grid size-11 shrink-0 place-items-center rounded-[12px] bg-white/15">
+              <Icon name={transition.lift ? "elevator" : "stairs"} size={24} strokeWidth={2} className="text-white" />
             </div>
             <div>
               <p className="text-[15px] font-semibold leading-tight">{transition.text}</p>
